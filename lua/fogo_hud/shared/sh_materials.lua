@@ -1,6 +1,6 @@
 local imgurID = {
     ["talkIcon"] = "",
-    ["plyInfo"] = "CjmjXPm"
+    ["hud_base_2"] = "RpHlHNK"
 }
 
 LinvLib.CreateImgurMaterials(imgurID, FogoHUD.Materials, "linventif/fogoHUD/material", "FogoHUD")
