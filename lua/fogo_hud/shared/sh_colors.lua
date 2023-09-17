@@ -5,6 +5,8 @@ local colors = {
     ["armor_obscured"] = Color(46, 44, 153),
     ["mana"] = Color(67, 130, 198),
     ["mana_obscured"] = Color(46, 90, 137),
+    ["text"] = Color(173, 173, 173),
+    ["white"] = Color (255, 255, 255),
 }
 
 function FogoHUD.GetColor(name)

@@ -9,120 +9,246 @@ end
 local elemPos = {
     ["base"] = {
         x = 5,
-        y = -5,
+        y = 5,
         w = 368,
         h = 132,
     },
+    ["base_2"] = {
+        x = 0,
+        y = 0,
+        w = 436,
+        h = 114,
+    },
+    ["base_22"] = {
+        x = 0,
+        y = 0,
+        w = 442,
+        h = 150,
+    },
+    ["health"] = {
+        parent = "base_2",
+        color = FogoHUD.GetColor("white"),
+        x = 22,
+        y = 24,
+        w = 392,
+        h = 30,
+        armorPos = {
+            x = 22,
+            y = 24,
+        }
+    },
+    ["mana"] = {
+        parent = "base_2",
+        x = 22,
+        y = 60,
+        w = 392,
+        h = 30,
+    },
+    ["armor"] = {
+        parent = "base_22",
+        x = 22,
+        y = 60,
+        w = 392,
+        h = 30,
+    },
+    ["health_text"] = {
+        parent = "base_2",
+        color = FogoHUD.GetColor("white"),
+        aling = TEXT_ALIGN_CENTER,
+        text = true,
+        x = 218,
+        y = 40,
+        w = 392,
+        h = 30,
+        armorPos = {
+            x = 218,
+            y = 40,
+        }
+    },
+    ["mana_text"] = {
+        parent = "base_2",
+        color = FogoHUD.GetColor("white"),
+        aling = TEXT_ALIGN_CENTER,
+        text = true,
+        x = 218,
+        y = 76,
+        w = 392,
+        h = 30,
+    },
+    ["armor_text"] = {
+        parent = "base_22",
+        color = FogoHUD.GetColor("white"),
+        aling = TEXT_ALIGN_CENTER,
+        text = true,
+        armor = true,
+        x = 218,
+        y = 76,
+        w = 392,
+        h = 30,
+    },
     ["model"] = {
+        parent = "base",
         x = 21 + 5,
         y = 21 + 5,
         w = 90 - 10,
         h = 90 - 10,
     },
     ["name"] = {
-        x = 117,
-        y = 21,
+        parent = "base",
+        text = true,
+        x = 122,
+        y = 26,
         w = 230,
         h = 26,
     },
     ["job"] = {
-        x = 117,
-        y = 53,
+        parent = "base",
+        text = true,
+        x = 122,
+        y = 58,
         w = 230,
         h = 26,
     },
     ["money"] = {
-        x = 117,
-        y = 85,
+        parent = "base",
+        text = true,
+        x = 122,
+        y = 90,
         w = 230,
         h = 26,
     },
 }
 
-local multi = 1.3
+local multi = 1.2
 
+// Base 1
 elemPos["base"].w = RespW(elemPos["base"].w * multi)
 elemPos["base"].h = RespH(elemPos["base"].h * multi)
 elemPos["base"].x = RespW(elemPos["base"].x)
-elemPos["base"].y = ScrH() - RespH(elemPos["base"].h) + RespH(elemPos["base"].y)
+elemPos["base"].y = RespH(1080 - elemPos["base"].h - elemPos["base"].y)
+
+// Base 2
+elemPos["base_2"].w = RespW(elemPos["base_2"].w * multi)
+elemPos["base_2"].h = RespH(elemPos["base_2"].h * multi)
+elemPos["base_2"].x = RespW(1920 / 2 - elemPos["base_2"].w / 2)
+elemPos["base_2"].y = RespH(1080 - elemPos["base_2"].h)
+
+// Base 22
+elemPos["base_22"].w = RespW(elemPos["base_22"].w * multi)
+elemPos["base_22"].h = RespH(elemPos["base_22"].h * multi)
+elemPos["base_22"].x = RespW(1920 / 2 - elemPos["base_22"].w / 2)
+elemPos["base_22"].y = RespH(1080 - elemPos["base_22"].h)
 
 // for every element in elemPos table, multiply by multi
 for k, v in pairs(elemPos) do
-    if (k == "base") then continue end
+    if (k == "base" || k == "base_2" || k == "base_22") then continue end
 
     elemPos[k].w = RespW(elemPos[k].w * multi)
     elemPos[k].h = RespH(elemPos[k].h * multi)
 
-    elemPos[k].x = elemPos["base"].x + RespW(elemPos[k].x * multi)
-    elemPos[k].y = elemPos["base"].y + RespH(elemPos[k].y * multi)
+    elemPos[k].x = elemPos[elemPos[k].parent].x + RespW(elemPos[k].x * multi)
+    elemPos[k].y = elemPos[elemPos[k].parent].y + RespH(elemPos[k].y * multi)
+
+    if (elemPos[k].armorPos) then
+        elemPos[k].armorPos.x = elemPos["base_22"].x + RespW(elemPos[k].armorPos.x * multi)
+        elemPos[k].armorPos.y = elemPos["base_22"].y + RespH(elemPos[k].armorPos.y * multi)
+    end
 end
 
-local prefix = {
-    ["name"] = "Nom: ",
-    ["job"] = "Metier: ",
-    ["money"] = "Argent: ",
-}
+local function coolMoneyShow(amount)
+    // space every 3 char with a space, finish with a 'Ryo', round value and, if + 999 999 999 999 replace with 'Unlimited'
+    if (amount >= 999999999999) then
+        return "Stop Cheating"
+    end
+
+    local str = string.reverse(string.format("%d", amount))
+    str = string.gsub(str, "(%d%d%d)", "%1 ")
+    str = string.gsub(str, "^%s*(.-)%s*$", "%1")
+    str = string.reverse(str)
+    str = string.gsub(str, "^%s*(.-)%s*$", "%1")
+    str = str .. " Ryo"
+
+    return str
+end
+
+local function shortInfo(str)
+    if (string.len(str) > 20) then
+        return string.sub(str, 1, 20) .. "..."
+    end
+
+    return str
+end
 
 local funcElement = {
     ["name"] = function(ply)
-        return ply:Nick()
+        return "Nom: " .. shortInfo(ply:Nick())
     end,
     ["job"] = function(ply)
-        return ply:getDarkRPVar("job") or "Unknow"
+        return "Metier: " .. shortInfo(ply:getDarkRPVar("job") || "Unknow")
     end,
     ["money"] = function(ply)
-        return "$"..ply:getDarkRPVar("money") or 0
+        return "Argent: " .. coolMoneyShow(ply:getDarkRPVar("money") || 0)
+    end,
+    ["health_text"] = function(ply)
+        return ply:Health() .. " Vie"
+    end,
+    ["mana_text"] = function(ply)
+        return (ply:GetNWInt("fogoMana") || 1000) .. " Chakra"
+    end,
+    ["armor_text"] = function(ply)
+        return ply:Armor() .. " Armure"
     end,
 }
 
-// TODO: fix this (don't show on connect, and don't hide when hud sould be hidden)
-local HeadModel = vgui.Create("DModelPanel")
-HeadModel:SetSize(elemPos["model"].w, elemPos["model"].h)
-HeadModel:SetPos(0, 0)
-HeadModel:SetModel("models/player/kleiner.mdl")
+local HeadModel = false
 
--- Ajustez la caméra pour cibler la tête
-function HeadModel:LayoutEntity(Entity)
-    self:SetLookAt(Entity:GetBonePosition(Entity:LookupBone("ValveBiped.Bip01_Head1")))
-    self:SetCamPos(Entity:GetBonePosition(Entity:LookupBone("ValveBiped.Bip01_Head1")) + Vector(20, 0, 0))
-end
+timer.Simple(0, function()
+    HeadModel = vgui.Create("DModelPanel")
+    HeadModel:SetSize(elemPos["model"].w, elemPos["model"].h)
+    HeadModel:SetPos(0, 0)
+    HeadModel:SetModel("models/player/kleiner.mdl")
+
+    function HeadModel:LayoutEntity(Entity)
+        self:SetLookAt(Entity:GetBonePosition(Entity:LookupBone("ValveBiped.Bip01_Head1")))
+        self:SetCamPos(Entity:GetBonePosition(Entity:LookupBone("ValveBiped.Bip01_Head1")) + Vector(20, 0, 0))
+    end
+end)
+
+local lerp_health, lerp_armor, lerp_mana = 0, 0, 0
+local lerp_health_speed, lerp_armor_speed, lerp_mana_speed = 0.1, 0.1, 0.1
 
 hook.Add("HUDPaint", "FogoHUD:Paint", function()
     local ply = LocalPlayer()
-    if not IsValid(ply) || not ply:Alive() then
+    if !IsValid(ply) || !ply:Alive() || !HeadModel then
         return
     end
 
-    local health = ply:Health()
-    local health_max = ply:GetMaxHealth()
-    local armor = ply:Armor()
-    local armor_max = ply:GetMaxArmor()
+    // dev info
+    draw.SimpleText("FOGO RP - v1.28 - " .. os.date("%Y-%m-%d"), "Default", ScrW() - 5, ScrH() - 20, FogoHUD.GetColor("text"), TEXT_ALIGN_RIGHT, TEXT_ALIGN_LEFT)
 
-    local job = ply:getDarkRPVar("job") or "Unknow"
-    local salary = ply:getDarkRPVar("salary") or 0
-    local wallet = ply:getDarkRPVar("money") or 0
+    local health_max = ply:GetMaxHealth()
+    local health = math.Clamp(ply:Health(), 0, health_max)
+
+    local armor_max = ply:GetMaxArmor()
+    local armor = math.Clamp(ply:Armor(), 0, armor_max)
+
+    local mana_max = ply:GetNWInt("fogoManaMax") || 1000
+    local mana = math.Clamp(ply:GetNWInt("fogoMana") || 1000, 0, mana_max)
+
+    local job = ply:getDarkRPVar("job") || "Unknow"
+    local salary = ply:getDarkRPVar("salary") || 0
+    local wallet = ply:getDarkRPVar("money") || 0
+
+
+    // lerps
+    lerp_health = Lerp(lerp_health_speed, lerp_health, health)
+    lerp_armor = Lerp(lerp_armor_speed, lerp_armor, armor)
+    lerp_mana = Lerp(lerp_mana_speed, lerp_mana, mana)
 
     // show hud base (image - FogoHUD.Materials("plyInfo.png"))
-    surface.SetDrawColor(255, 255, 255, 255)
+    surface.SetDrawColor(Color(255, 255, 255, 255))
     surface.SetMaterial(FogoHUD.Materials["hud_base_2"])
     surface.DrawTexturedRect(elemPos["base"].x, elemPos["base"].y, elemPos["base"].w, elemPos["base"].h)
-
-    // draw a rectangle for element
-    -- for k, v in pairs(elemPos) do
-    --     if (k == "base") then continue end
-
-    --     surface.SetDrawColor(143, 76, 76, 66, 128)
-    --     surface.DrawRect(v.x, v.y, v.w, v.h)
-    -- end
-
-    for k, v in pairs(elemPos) do
-        if (k == "base" || k == "model") then continue end
-
-        draw.SimpleText(prefix[k]..funcElement[k](ply), "FogoFont:Naruto:20", v.x + 5, v.y + 5, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_LEFT)
-    end
-
-    local ply = LocalPlayer()
-    if not IsValid(ply) then return end
 
     -- Mettez à jour le modèle en fonction du joueur local
     HeadModel:SetModel(ply:GetModel())
@@ -131,4 +257,48 @@ hook.Add("HUDPaint", "FogoHUD:Paint", function()
     -- Dessinez le DModelPanel à l'écran
     HeadModel:SetPos(elemPos["model"].x, elemPos["model"].y)
     HeadModel:PaintManual()
+
+    local base22 = "hud_base_4"
+    local basename = "base_2"
+    local health_x, health_y = elemPos["health"].x, elemPos["health"].y
+    if (armor > 0) then
+        base22 = "hud_base_7"
+        basename = "base_22"
+        health_x = elemPos["health"].armorPos.x
+        health_y = elemPos["health"].armorPos.y
+    end
+
+    // draw health bar
+    surface.SetDrawColor(Color(255, 255, 255, 255))
+    surface.SetMaterial(FogoHUD.Materials[base22])
+    surface.DrawTexturedRect(elemPos[basename].x, elemPos[basename].y, elemPos[basename].w, elemPos[basename].h)
+
+    // draw health bar (rounded rectangle)
+    local health_coef = lerp_health / health_max
+    draw.RoundedBox(6, health_x, health_y, elemPos["health"].w, elemPos["health"].h, FogoHUD.GetColor("health_obscured"))
+    draw.RoundedBox(6, health_x + ((elemPos["health"].w / 2) - (elemPos["health"].w * health_coef) / 2), health_y, elemPos["health"].w * health_coef, elemPos["health"].h, FogoHUD.GetColor("health"))
+
+    // mana bar
+    local mana_coef = lerp_mana / mana_max
+    draw.RoundedBox(6, elemPos["mana"].x, elemPos["mana"].y, elemPos["mana"].w, elemPos["mana"].h, FogoHUD.GetColor("mana_obscured"))
+    draw.RoundedBox(6, elemPos["mana"].x + ((elemPos["mana"].w / 2) - (elemPos["mana"].w * mana_coef) / 2), elemPos["mana"].y, elemPos["mana"].w * mana_coef, elemPos["mana"].h, FogoHUD.GetColor("mana"))
+
+    if (armor > 0) then
+        // armor
+        local armor_coef = lerp_armor / armor_max
+        draw.RoundedBox(6, elemPos["armor"].x, elemPos["armor"].y, elemPos["armor"].w, elemPos["armor"].h, FogoHUD.GetColor("armor_obscured"))
+        draw.RoundedBox(6, elemPos["armor"].x + ((elemPos["armor"].w / 2) - (elemPos["armor"].w * armor_coef) / 2), elemPos["armor"].y, elemPos["armor"].w * armor_coef, elemPos["armor"].h, FogoHUD.GetColor("armor"))
+    end
+
+    for k, v in pairs(elemPos) do
+        if (!v.text || !v.parent || (armor == 0 && v.armor)) then continue end
+
+        local new_x, new_y = v.x, v.y
+        if (armor > 0 && v.armorPos) then
+            new_x = v.armorPos.x
+            new_y = v.armorPos.y
+        end
+
+        draw.SimpleText(funcElement[k](ply), "FogoFont:Naruto:18", new_x, new_y, v.color || FogoHUD.GetColor("text"), v.aling || TEXT_ALIGN_LEFT, v.aling || TEXT_ALIGN_LEFT)
+    end
 end)
