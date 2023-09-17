@@ -125,19 +125,19 @@ local multi = 1.2
 elemPos["base"].w = RespW(elemPos["base"].w * multi)
 elemPos["base"].h = RespH(elemPos["base"].h * multi)
 elemPos["base"].x = RespW(elemPos["base"].x)
-elemPos["base"].y = RespH(1080 - elemPos["base"].h - elemPos["base"].y)
+elemPos["base"].y = ScrH() - elemPos["base"].h - RespH(elemPos["base"].y)
 
 // Base 2
 elemPos["base_2"].w = RespW(elemPos["base_2"].w * multi)
 elemPos["base_2"].h = RespH(elemPos["base_2"].h * multi)
-elemPos["base_2"].x = RespW(1920 / 2 - elemPos["base_2"].w / 2)
-elemPos["base_2"].y = RespH(1080 - elemPos["base_2"].h)
+elemPos["base_2"].x = ScrW() / 2 - elemPos["base_2"].w / 2
+elemPos["base_2"].y = ScrH() - elemPos["base_2"].h
 
 // Base 22
 elemPos["base_22"].w = RespW(elemPos["base_22"].w * multi)
 elemPos["base_22"].h = RespH(elemPos["base_22"].h * multi)
-elemPos["base_22"].x = RespW(1920 / 2 - elemPos["base_22"].w / 2)
-elemPos["base_22"].y = RespH(1080 - elemPos["base_22"].h)
+elemPos["base_22"].x = ScrW() / 2 - elemPos["base_22"].w / 2
+elemPos["base_22"].y = ScrH() - elemPos["base_22"].h
 
 // for every element in elemPos table, multiply by multi
 for k, v in pairs(elemPos) do
@@ -157,7 +157,7 @@ end
 
 local function coolMoneyShow(amount)
     // space every 3 char with a space, finish with a 'Ryo', round value and, if + 999 999 999 999 replace with 'Unlimited'
-    if (amount >= 999999999999) then
+    if (amount >= 999999999) then
         return "Stop Cheating"
     end
 
