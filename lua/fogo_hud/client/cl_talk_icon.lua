@@ -1,6 +1,12 @@
 local VoiceIsActived = false
 local PlayerVoicePanels = {}
 
+local function RespH(x)
+    return x * ScrH() / 1080
+end
+
+local iconSize = RespH(92)
+
 function draw.RotatedBox(x, y, w, h)
     local Rotating = math.sin(CurTime() * 3)
         local backwards = 0
@@ -10,14 +16,14 @@ function draw.RotatedBox(x, y, w, h)
         backwards = 1
     end
 
-    surface.SetMaterial(FogoHUD.materials["talk"])
+    surface.SetMaterial(FogoHUD.Materials["talk"])
     surface.SetDrawColor(Color(255, 255, 255, 255))
-    surface.DrawTexturedRectRotated(x, y, Rotating * 64, 64,  backwards)
+    surface.DrawTexturedRectRotated(x, y, Rotating * iconSize, iconSize,  backwards)
 end
 
 hook.Add("HUDPaint", "FogoHUD:HUDPaint", function()
     if VoiceIsActived then
-        draw.RotatedBox( ScrW()-55, ScrH()/2-32, 64, 64)
+        draw.RotatedBox( ScrW() - iconSize, ScrH() / 2 - (iconSize / 2), iconSize, iconSize)
     end
 end)
 
