@@ -33,8 +33,8 @@ local elemPos = {
         w = 392,
         h = 30,
         armorPos = {
-            x = 22,
-            y = 24,
+            x = 24,
+            y = 25,
         }
     },
     ["mana"] = {
@@ -46,7 +46,7 @@ local elemPos = {
     },
     ["armor"] = {
         parent = "base_22",
-        x = 22,
+        x = 24,
         y = 60,
         w = 392,
         h = 30,
@@ -171,9 +171,20 @@ local function coolMoneyShow(amount)
     return str
 end
 
+local function amountSeparator(amount)
+    local str = string.reverse(string.format("%d", amount))
+    str = string.gsub(str, "(%d%d%d)", "%1 ")
+    str = string.gsub(str, "^%s*(.-)%s*$", "%1")
+    str = string.reverse(str)
+    str = string.gsub(str, "^%s*(.-)%s*$", "%1")
+
+    return str
+end
+
+local maxStr = math.Round(RespH(20))
 local function shortInfo(str)
-    if (string.len(str) > 20) then
-        return string.sub(str, 1, 20) .. "..."
+    if (string.len(str) > maxStr) then
+        return string.sub(str, 1, maxStr) .. "..."
     end
 
     return str
@@ -190,10 +201,13 @@ local funcElement = {
         return "Argent: " .. coolMoneyShow(ply:getDarkRPVar("money") || 0)
     end,
     ["health_text"] = function(ply)
-        return ply:Health() .. " Vie"
+        if (ply:HasGodMode()) then
+            return "Invincible"
+        end
+        return amountSeparator(ply:Health()) .. " Vie"
     end,
     ["mana_text"] = function(ply)
-        return (ply:GetNWInt("fogoMana") || 1000) .. " Chakra"
+        return amountSeparator(ply:GetNWInt("fogoMana") || 1000) .. " Chakra"
     end,
     ["armor_text"] = function(ply)
         return ply:Armor() .. " Armure"
@@ -220,7 +234,7 @@ local lerp_health_speed, lerp_armor_speed, lerp_mana_speed = 0.1, 0.1, 0.1
 // create roboto font 16
 surface.CreateFont("FogoFont:Roboto:18", {
     font = "Roboto",
-    size = 18,
+    size = RespW(18),
     weight = 500,
     antialias = true,
     shadow = false,
@@ -233,7 +247,7 @@ hook.Add("HUDPaint", "FogoHUD:Paint", function()
     end
 
     // dev info
-    draw.SimpleText("FOGO RP - " .. os.date("%Y-%m-%d") .. " " .. os.date("%H:%M:%S"), "FogoFont:Roboto:18", ScrW() - 5, ScrH() - 20, FogoHUD.GetColor("text"), TEXT_ALIGN_RIGHT, TEXT_ALIGN_LEFT)
+    draw.SimpleText("FOGO RP - " .. os.date("%Y-%m-%d") .. " " .. os.date("%H:%M:%S"), "FogoFont:Roboto:18", ScrW() - RespW(5), ScrH() - RespH(20), FogoHUD.GetColor("text"), TEXT_ALIGN_RIGHT, TEXT_ALIGN_LEFT)
 
     local health_max = ply:GetMaxHealth()
     local health = math.Clamp(ply:Health(), 0, health_max)
