@@ -217,6 +217,15 @@ end)
 local lerp_health, lerp_armor, lerp_mana = 0, 0, 0
 local lerp_health_speed, lerp_armor_speed, lerp_mana_speed = 0.1, 0.1, 0.1
 
+// create roboto font 16
+surface.CreateFont("FogoFont:Roboto:18", {
+    font = "Roboto",
+    size = 18,
+    weight = 500,
+    antialias = true,
+    shadow = false,
+})
+
 hook.Add("HUDPaint", "FogoHUD:Paint", function()
     local ply = LocalPlayer()
     if !IsValid(ply) || !ply:Alive() || !HeadModel then
@@ -224,7 +233,7 @@ hook.Add("HUDPaint", "FogoHUD:Paint", function()
     end
 
     // dev info
-    draw.SimpleText("FOGO RP - v1.28 - " .. os.date("%Y-%m-%d"), "Default", ScrW() - 5, ScrH() - 20, FogoHUD.GetColor("text"), TEXT_ALIGN_RIGHT, TEXT_ALIGN_LEFT)
+    draw.SimpleText("FOGO RP - " .. os.date("%Y-%m-%d") .. " " .. os.date("%H:%M:%S"), "FogoFont:Roboto:18", ScrW() - 5, ScrH() - 20, FogoHUD.GetColor("text"), TEXT_ALIGN_RIGHT, TEXT_ALIGN_LEFT)
 
     local health_max = ply:GetMaxHealth()
     local health = math.Clamp(ply:Health(), 0, health_max)
