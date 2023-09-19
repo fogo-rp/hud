@@ -57,12 +57,12 @@ local elemPos = {
         aling = TEXT_ALIGN_CENTER,
         text = true,
         x = 218,
-        y = 40,
+        y = 41,
         w = 392,
         h = 30,
         armorPos = {
             x = 218,
-            y = 40,
+            y = 41,
         }
     },
     ["mana_text"] = {
@@ -71,7 +71,7 @@ local elemPos = {
         aling = TEXT_ALIGN_CENTER,
         text = true,
         x = 218,
-        y = 76,
+        y = 77,
         w = 392,
         h = 30,
     },
@@ -82,7 +82,7 @@ local elemPos = {
         text = true,
         armor = true,
         x = 218,
-        y = 76,
+        y = 77,
         w = 392,
         h = 30,
     },
@@ -97,7 +97,7 @@ local elemPos = {
         parent = "base",
         text = true,
         x = 122,
-        y = 26,
+        y = 27,
         w = 230,
         h = 26,
     },
@@ -105,7 +105,7 @@ local elemPos = {
         parent = "base",
         text = true,
         x = 122,
-        y = 58,
+        y = 59,
         w = 230,
         h = 26,
     },
@@ -113,34 +113,37 @@ local elemPos = {
         parent = "base",
         text = true,
         x = 122,
-        y = 90,
+        y = 91,
         w = 230,
         h = 26,
     },
 }
 
-local multi = 1.2
+local multiInfo = 1.1
+local multiBar = 1
 
 // Base 1
-elemPos["base"].w = RespW(elemPos["base"].w * multi)
-elemPos["base"].h = RespH(elemPos["base"].h * multi)
+elemPos["base"].w = RespW(elemPos["base"].w * multiInfo)
+elemPos["base"].h = RespH(elemPos["base"].h * multiInfo)
 elemPos["base"].x = RespW(elemPos["base"].x)
 elemPos["base"].y = ScrH() - elemPos["base"].h - RespH(elemPos["base"].y)
 
 // Base 2
-elemPos["base_2"].w = RespW(elemPos["base_2"].w * multi)
-elemPos["base_2"].h = RespH(elemPos["base_2"].h * multi)
+elemPos["base_2"].w = RespW(elemPos["base_2"].w * multiBar)
+elemPos["base_2"].h = RespH(elemPos["base_2"].h * multiBar)
 elemPos["base_2"].x = ScrW() / 2 - elemPos["base_2"].w / 2
 elemPos["base_2"].y = ScrH() - elemPos["base_2"].h
 
 // Base 22
-elemPos["base_22"].w = RespW(elemPos["base_22"].w * multi)
-elemPos["base_22"].h = RespH(elemPos["base_22"].h * multi)
+elemPos["base_22"].w = RespW(elemPos["base_22"].w * multiBar)
+elemPos["base_22"].h = RespH(elemPos["base_22"].h * multiBar)
 elemPos["base_22"].x = ScrW() / 2 - elemPos["base_22"].w / 2
 elemPos["base_22"].y = ScrH() - elemPos["base_22"].h
 
 // for every element in elemPos table, multiply by multi
 for k, v in pairs(elemPos) do
+    local multi = (elemPos[k].parent == "base") && multiInfo || multiBar
+    
     if (k == "base" || k == "base_2" || k == "base_22") then continue end
 
     elemPos[k].w = RespW(elemPos[k].w * multi)
@@ -322,6 +325,6 @@ hook.Add("HUDPaint", "FogoHUD:Paint", function()
             new_y = v.armorPos.y
         end
 
-        draw.SimpleText(funcElement[k](ply), "FogoFont:Naruto:18", new_x, new_y, v.color || FogoHUD.GetColor("text"), v.aling || TEXT_ALIGN_LEFT, v.aling || TEXT_ALIGN_LEFT)
+        draw.SimpleText(funcElement[k](ply), "FogoFont:Naruto:16", new_x, new_y, v.color || FogoHUD.GetColor("text"), v.aling || TEXT_ALIGN_LEFT, v.aling || TEXT_ALIGN_LEFT)
     end
 end)
