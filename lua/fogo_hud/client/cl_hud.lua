@@ -210,7 +210,7 @@ local funcElement = {
         return amountSeparator(ply:Health()) .. " Vie"
     end,
     ["mana_text"] = function(ply)
-        return amountSeparator(ply:GetNWInt("fogoMana") || 1000) .. " Chakra"
+        return amountSeparator(ply:GetNWInt("linv_mana") || 1000) .. " Chakra - en dev"
     end,
     ["armor_text"] = function(ply)
         return ply:Armor() .. " Armure"
@@ -258,8 +258,8 @@ hook.Add("HUDPaint", "FogoHUD:Paint", function()
     local armor_max = ply:GetMaxArmor()
     local armor = math.Clamp(ply:Armor(), 0, armor_max)
 
-    local mana_max = ply:GetNWInt("fogoManaMax") || 1000
-    local mana = math.Clamp(ply:GetNWInt("fogoMana") || 1000, 0, mana_max)
+    local mana_max = ply:GetNWInt("linv_mana_max") || 1000
+    local mana = math.Clamp(ply:GetNWInt("linv_mana") || 1000, 0, mana_max)
 
     local job = ply:getDarkRPVar("job") || "Unknow"
     local salary = ply:getDarkRPVar("salary") || 0
